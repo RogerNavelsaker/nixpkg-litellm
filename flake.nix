@@ -38,7 +38,7 @@
     };
 
     litellm-src = {
-      url = "github:BerriAI/litellm/49943cd52ea46aacf8db2e5cb2b890d580fe9bb4";
+      url = "github:BerriAI/litellm/e3370c9d6152cc4407a55e06c101e3c7dd4168ab";
       flake = false;
     };
   };
@@ -56,8 +56,8 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
       lib = pkgs.lib;
-      version = "1.106.2";
-      revision = "49943cd52ea46aacf8db2e5cb2b890d580fe9bb4";
+      version = "1.111.0";
+      revision = "e3370c9d6152cc4407a55e06c101e3c7dd4168ab";
       # Match Prisma Client Python's generator check to Nixpkgs Prisma 6.19.3.
       prismaEngineVersion = "c2990dca591cba766e3b7ef5d9e8a84796e47ab7";
       communityExtras = [
@@ -170,17 +170,21 @@
             pkgs.rustPlatform.cargoSetupHook
             pkgs.rustPlatform.maturinBuildHook
           ];
-          cargoRoot = "litellm-rust";
+          cargoRoot = "litellm/rust";
           cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
             pname = "litellm";
             inherit version;
             src = litellm-src;
-            cargoRoot = "litellm-rust";
-            hash = "sha256-jOR+k7iKF+/TTx2qc7vLBvIoew+bPY8c/tXeFGBywgM=";
+            cargoRoot = "litellm/rust";
+            hash = "sha256-vh7eZXg4pFVSpvQvqRgekhzWRcyHLISJVfpVxUka5G0=";
           };
           postPatch = (old.postPatch or "") + ''
-            substituteInPlace pyproject.toml \
-              --replace-fail '    "litellm-enterprise==0.1.76.post1",' ""
+            sed -i '/^    "litellm-enterprise==/d' pyproject.toml
+            ! grep -q 'litellm-enterprise==' pyproject.toml
+          '';
+          # Upstream's build backend maps litellm/cli to litellm_cli; the maturin hook bypasses it.
+          preInstall = (old.preInstall or "") + ''
+            ${pkgs.python313}/bin/python .github/packaging/cli_package.py dist/*.whl
           '';
         });
       };
@@ -231,7 +235,7 @@
         cp -R "$sitePackages/prisma/." "$generatedPackages/prisma/"
         chmod -R u+w "$generatedPackages/prisma"
 
-        cp ${litellm-src}/schema.prisma "$out/schema.prisma"
+        cp ${litellm-src}/litellm/proxy/schema.prisma "$out/schema.prisma"
         sed -i \
           -e '/^generator client {/a\  output = "'"$generatedPackages"'/prisma"' \
           -e 's/^  binaryTargets =.*/  binaryTargets = ["native"]/' \
@@ -385,7 +389,7 @@
         from litellm_proxy_extras import prisma_toolchain
         assert callable(prisma_toolchain.run_prisma)
 
-        assert importlib.metadata.version("litellm") == "1.106.2"
+        assert importlib.metadata.version("litellm") == "1.111.0"
         import litellm
         PY
 

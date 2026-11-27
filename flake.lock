@@ -3,17 +3,17 @@
     "litellm-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1792570780,
-        "narHash": "sha256-WZP27aJWtGpvCTHQShE/ufqp/MerqTM2dTTVj1T9EfI=",
+        "lastModified": 1795555622,
+        "narHash": "sha256-dRTHAo1vMFNYgLw23RTWgJ2pyw1l9lThmXj8cjAd9L0=",
         "owner": "BerriAI",
         "repo": "litellm",
-        "rev": "49943cd52ea46aacf8db2e5cb2b890d580fe9bb4",
+        "rev": "e3370c9d6152cc4407a55e06c101e3c7dd4168ab",
         "type": "github"
       },
       "original": {
         "owner": "BerriAI",
         "repo": "litellm",
-        "rev": "49943cd52ea46aacf8db2e5cb2b890d580fe9bb4",
+        "rev": "e3370c9d6152cc4407a55e06c101e3c7dd4168ab",
         "type": "github"
       }
     },
